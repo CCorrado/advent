@@ -1,6 +1,3 @@
-from collections import defaultdict
-
-
 def get_result(file_path):
     try:
         file = open(file_path)
@@ -10,27 +7,29 @@ def get_result(file_path):
         print("This is a directory: " + str(file_path))
     else:
         with file:
-            twos = 0
-            threes = 0
+            file_lines = set()
             for line in file.readlines():
-                wd = defaultdict(int)
-                for st in line:
-                    wd[st] += 1
-                plus_three = False
-                plus_two = False
-                for val in wd.values():
-                    if val == 3:
-                        plus_three = True
-                    if val == 2:
-                        plus_two = True
-                    if plus_three and plus_two:
-                        break
-                if plus_two:
-                    twos += 1
-                if plus_three:
-                    threes += 1
+                file_lines.add(line)
 
-            return twos * threes
+            for st in file_lines:
+                dup_list = list(file_lines)
+                dup_list.remove(st)
+
+                for s in dup_list:
+                    result = get_diff(s.strip(), st.strip())
+                    if result is True:
+                        print(s, st)
+                        return s, st
+
+
+def get_diff(st1, st2):
+    results = list(zip(st1, st2))
+    comp_results = 0
+    for result in results:
+        comp = result[0] == result[1]
+        if not comp:
+            comp_results += 1
+    return comp_results == 1
 
 
 if __name__ == "__main__":
