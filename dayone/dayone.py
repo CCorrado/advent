@@ -1,6 +1,3 @@
-from collections import defaultdict
-
-
 def get_result(file_path):
     try:
         file = open(file_path)
@@ -10,30 +7,20 @@ def get_result(file_path):
         print("This is a directory: " + str(file_path))
     else:
         with file:
-            result = 0
-            freqs = defaultdict(int)
+            adjustments = list()
+            for _, line in enumerate(file.readlines()):
+                adjustments.append(int(line))
 
-            for index, line in enumerate(file.readlines()):
-                operation = 1
-                if int(line) < 0:
-                    operation = -1
-
-                for oper in range(0, int(line), operation):
-                    current = operation + result
-                    if current in freqs.values():
-                        print(current)
+            freqs = set()
+            freqs.add(0)
+            current = 0
+            while True:
+                for adjustment in adjustments:
+                    current += adjustment
+                    if current in freqs:
                         return current
-                    result = current
-
-                if result in freqs.values():
-                    print(result)
-                    return result
-                else:
-                    freqs[index + 1] = result
-
-            print(result)
-            return result
+                    freqs.add(current)
 
 
 if __name__ == "__main__":
-    get_result("day1input.txt")
+    print(get_result("day1input.txt"))
